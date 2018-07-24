@@ -11,7 +11,7 @@ pascal_part_path = 'Annotations_Part'
 xml_file_path = '_xml_annotations'
 
 mat_file_list = os.listdir(os.path.join(ROOT, pascal_part_path))
-# global count_car, count_bus, count_file
+# it is just for recoding
 count_car = count_bus = count_file = 0
 
 def read_mat_file(filepath, _filename):
@@ -33,7 +33,8 @@ def read_mat_file(filepath, _filename):
 
     for i in range(len(anno_object)):
         objs_name = str(anno_object[i][0])[3:-2]
-
+        
+        # find object class
         if objs_name == 'car' or objs_name == 'bus':
             objs_part = np.ndarray.tolist(anno_object[i][3])
             if len(objs_part) == 0:
@@ -41,7 +42,8 @@ def read_mat_file(filepath, _filename):
 
             for j in range(len(objs_part[0])):
                 objs_part_name = str(objs_part[0][j][0])[3:-2]
-
+                
+                # find object class's parts
                 if objs_part_name == 'bliplate' or objs_part_name == 'fliplate':
                     if objs_name == 'car': count_car += 1
                     if objs_name == 'bus': count_bus += 1
@@ -50,7 +52,7 @@ def read_mat_file(filepath, _filename):
                     width = len(plate_part_list[0])
                     height = len(plate_part_list)
 
-
+                    # find min value
                     is_break = False
                     for x in range(height):
                         for y in range(width):
@@ -61,7 +63,8 @@ def read_mat_file(filepath, _filename):
                                 break
                         if is_break:
                             break
-
+                
+                    # find max value
                     is_break = False
                     for _x in reversed(range(height)):
                         for _y in reversed(range(width)):
@@ -80,7 +83,7 @@ def read_mat_file(filepath, _filename):
         # make xml
         make_xml_file(return_list, filename)
         
-
+# function to make xml code look clearly
 def indent(elem, level=0):
     i = "\n" + level*"    "
     if len(elem):
@@ -96,6 +99,7 @@ def indent(elem, level=0):
     else:
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
+            
 
 def make_xml_file(_mat_list, _filename):
 
